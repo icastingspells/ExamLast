@@ -203,7 +203,7 @@ else
 
 - Страница Администратора 
 ```cs
-        TestContext db = new TestContext();
+        	TestContext db = new TestContext();
 		public AdminPage()
 		{
 		    InitializeComponent();
@@ -232,20 +232,40 @@ else
 
 		private void BtnDelete_Click(object sender, RoutedEventArgs e)
 		{
-		    if (StaticObjects.user.UserId == (DtGrid.SelectedItem as User).UserId)
-		    {
-		        MessageBox.Show("Для удаленя данного пользователя необходимо войти в систему под другим пользователем");
-		    }
-		    else
-		    {
-		        if (MessageBox.Show("Удалить запись ?", "Удаление записи", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-		        {
-	            User user = DtGrid.SelectedItem as User;
-	            db.Users.Remove(user);
-	            db.SaveChanges();
-	            StaticObjects.dataGrid.ItemsSource = db.Users.ToList();
-		        }
-		    }
+    			User selectedUser = DtGrid.SelectedItem as User;
+
+			if (selectedUser == null)
+    			{
+        			MessageBox.Show("Выберите пользователя для удаления.");
+        			return;
+    			}
+
+    			if (StaticObjects.user.UserId == selectedUser.UserId)
+    			{
+        			MessageBox.Show("Для удаления данного пользователя необходимо войти в систему под другим пользователем.");
+        			return;
+    			}
+    			else
+			{
+        			if (MessageBox.Show("Удалить запись?", "Удаление записи", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+        			{
+            				using (var db = new TestContext()) // Создаем новый контекст
+            				{
+                				var userToDelete = db.Users.Find(selectedUser.UserId); // Ищем пользователя в БД
+
+                				if (userToDelete != null)
+                				{
+                    					db.Users.Remove(userToDelete);
+                    					db.SaveChanges();
+                    					StaticObjects.dataGrid.ItemsSource = db.Users.ToList(); // Обновляем DataGrid
+						}
+	               				 else
+						{
+                    					MessageBox.Show("Пользователь не найден в базе данных.");
+						}
+           				 }
+        			}
+    			}
 		}
 ```
 
