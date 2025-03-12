@@ -57,8 +57,8 @@
 
 1.  Desktop
 ```C#
-	new Authorization().ShowDialog();
 	StaticObjects.desktopFrame = DesktopFrame;
+	new Authorization().ShowDialog();
 ```
 2. Добавляем все нужные элементы для окон + прописываем имена x:Name="имя" и изменяем Title + центрируем
 3. В Desktop добавляем новый фрейм и меняем название
